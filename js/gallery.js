@@ -61,12 +61,34 @@ const createCard = (preview, image, description) => {
 </li>`
 }
 
-const insertItems = () => {
-  const gallery = document.querySelector('.gallery');
-
-  images.forEach(el => {
-    gallery.insertAdjacentHTML('beforeend', createCard(el.preview, el.original, el.description));
+const insertItems = (container, arr, item) => {
+  arr.forEach(el => {
+    container.insertAdjacentHTML('beforeend', item(el.preview, el.original, el.description));
   })
 }
 
-insertItems();
+const initGallery = () => {
+  const gallery = document.querySelector('.gallery');
+
+  insertItems(gallery, images, createCard);
+
+  gallery.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    if (e.target.classList.contains('gallery-image')) {
+      const openModal = basicLightbox.create(`<img width="1400" height="900" src="${e.target.dataset.source}">`,
+        {
+          onShow: () => document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+              openModal.close();
+            }
+          })
+        },
+      );
+      openModal.show();
+    }
+  });
+}
+
+initGallery();
+
