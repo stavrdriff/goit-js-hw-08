@@ -67,27 +67,35 @@ const insertItems = (container, arr, item) => {
   })
 }
 
+const initModal = (target) => {
+  const openModal = basicLightbox.create(`<img width="1400" height="900" src="${target.dataset.source}">`,
+    {
+      onShow: () => document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          openModal.close();
+        }
+      })
+    },
+  );
+  
+  openModal.show();
+}
+
+const galleryHandler = (arr) => {
+  arr.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    if (e.target.classList.contains('gallery-image')) {
+      initModal(e.target);
+    }
+  });
+}
+
 const initGallery = () => {
   const gallery = document.querySelector('.gallery');
 
   insertItems(gallery, images, createCard);
-
-  gallery.addEventListener('click', (e) => {
-    e.preventDefault();
-    
-    if (e.target.classList.contains('gallery-image')) {
-      const openModal = basicLightbox.create(`<img width="1400" height="900" src="${e.target.dataset.source}">`,
-        {
-          onShow: () => document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-              openModal.close();
-            }
-          })
-        },
-      );
-      openModal.show();
-    }
-  });
+  galleryHandler(gallery);
 }
 
 initGallery();
